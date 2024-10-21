@@ -112,7 +112,8 @@ python train.py --batch_size 8 --dataset ~/Data/voc2012.tfrecord --val_dataset ~
 ### Tensorflow Serving
 You can export the model to tf serving
 ```
-python export_tfserving.py --output serving/yolov3/1/
+python tools/export_tfserving.py
+python tools/export_tfserving.py --tiny --weights ./checkpoints/yolov3-tiny.tf --output serving/yolov3-tiny/1/
 # verify tfserving graph
 saved_model_cli show --dir serving/yolov3/1/ --tag_set serve --signature_def serving_default
 ```
@@ -125,6 +126,12 @@ yolo_nms_0: bounding boxes
 yolo_nms_1: scores
 yolo_nms_2: classes
 yolo_nms_3: numbers of valid detections
+```
+
+Test using an actual Tensorflow Serving server
+```
+docker run -p 8501:8501 --mount type=bind,source=./serving/yolov3,target=/models/yolov3 -e MODEL_NAME=yolov3 -t tensorflow/serving
+python tfserving.py
 ```
 
 ## Benchmark (No Training Yet)
